@@ -1,0 +1,37 @@
+{
+    "name": "winatabayu00/laravel-menu-generator",
+    "description": "Laravel menu generator",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Winata bayu",
+            "email": "winatabayu01@email.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-intl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Winata\\Menu\\": "src/"
+        },
+        "files": [
+            "helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Winata\\Menu\\MenuServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
