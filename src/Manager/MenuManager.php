@@ -3,6 +3,7 @@
 namespace Winata\Menu\Manager;
 
 use Winata\Menu\Abstracts\Menus;
+use Winata\Menu\Contracts\Menu;
 use Winata\Menu\MenuCollection;
 use Winata\Menu\Object\MenuGroup;
 
@@ -40,7 +41,10 @@ class MenuManager extends Menus
 
         if ($menus) {
             $menus = $menus(new AddMenu($currentGroup));
-            $currentGroup->menus->add($menus);
+            /** @var AddMenu $menus */
+            $menus->allMenus()->each(function ($menu) use ($currentGroup) {
+                $currentGroup->menus->add($menu);
+            });
         }
 
         return $this;

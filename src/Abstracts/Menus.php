@@ -9,7 +9,6 @@ abstract class Menus
 {
 
     protected ?MenuCollection $menus = null;
-    protected ?Fluent $factory = null;
 
     /**
      * @return MenuCollection

@@ -2,47 +2,110 @@
 
 namespace Winata\Menu\Object;
 
+use Exception;
 use Winata\Menu\Contracts\HasMenu;
+use Winata\Menu\Enums\MenuType;
 use Winata\Menu\MenuCollection;
 
+
+/**
+ * @property string $routeName
+ * @property string $title
+ * @property string $activeRouteName
+ * @property MenuCollection<Menu> $menus
+ * @property string $icon
+ * @property \Closure|bool $resolver
+ * @property MenuType $menuType
+ * */
 class Menu implements HasMenu
 {
-    public string $name;
-    public string $title;
-    public string $url;
-    public ?MenuCollection $menus = null;
-
 
     public function __construct(
-        string $title = 'default',
-        string $url = '#',
+        public ?string         $routeName = null,
+        public string          $title = 'menu',
+        public ?string         $activeRouteName = null,
+        public ?string         $icon = null,
+        public \Closure|bool   $resolver = true,
+        public MenuType        $menuType = MenuType::ROUTE,
+        public ?MenuCollection $menus = null,
     )
     {
-        $this->name = $title;
-        $this->setTitle($title);
-        $this->setUrl($url);
         if (!$this->menus instanceof MenuCollection) {
             $this->menus = new MenuCollection();
         }
+        $this->resolve();
     }
 
-    public function getTitle(): string
+    public function resolve(): bool
     {
-        return $this->title;
+        if ($this->resolver instanceof \Closure) {
+            $this->resolver = (bool)$this->resolver->call($this);
+        }
+
+        return $this->resolver;
     }
 
-    public function setTitle(string $title): void
+    public function isActive(): bool
     {
-        $this->title = $title;
+        if ($this->menuType == MenuType::ROUTE) {
+            return $this->isActiveRoute($this->activeRouteName ?? $this->routeName);
+        }
+
+        return false;
     }
 
-    public function getUrl(): string
+    private function isActiveRoute(string $route = '', array $params = []): bool
     {
-        return $this->url;
+        $route = str($route)->trim();
+        if ($route->isEmpty()) {
+            return false;
+        }
+
+        try {
+            $route = $route->toString();
+            if (request()->routeIs($route, "{$route}.*")) {
+                if (empty($params)) {
+                    return true;
+                }
+
+                $requestRoute = request()->route();
+                $paramNames = $requestRoute->parameterNames();
+
+                foreach ($params as $key => $value) {
+                    if (is_int($key)) {
+                        $key = $paramNames[$key];
+                    }
+
+                    if (
+                        $requestRoute->parameter($key) instanceof \Illuminate\Database\Eloquent\Model
+                        && $value instanceof \Illuminate\Database\Eloquent\Model
+                        && $requestRoute->parameter($key)->id != ($value->id ?? null)
+                    ) {
+                        return false;
+                    }
+
+                    if (is_object($requestRoute->parameter($key))) {
+                        // try to check param is enum type
+                        try {
+                            if ($requestRoute->parameter($key)->value && $requestRoute->parameter($key)->value != $value) {
+                                return false;
+                            }
+                        } catch (Exception $e) {
+                            return false;
+                        }
+                    } else {
+                        if ($requestRoute->parameter($key) != $value) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        } catch (Exception $e) {
+        }
+
+        return false;
     }
 
-    public function setUrl(string $url): void
-    {
-        $this->url = $url;
-    }
 }
