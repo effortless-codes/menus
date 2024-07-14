@@ -9,15 +9,18 @@ class MenuGroup implements HasMenu
 {
     public string $name = 'default';
     public string $group = 'default';
+    public ?string $icon = null;
     public ?MenuCollection $menus = null;
 
     public function __construct(
         string $name = 'default',
         string $group = 'default',
+        string $icon = null,
     )
     {
         $this->setName($name);
         $this->setGroup($group);
+        $this->setIcon($icon);
 
         if (!$this->menus instanceof MenuCollection) {
             $this->menus = new MenuCollection();
@@ -42,5 +45,15 @@ class MenuGroup implements HasMenu
     public function setGroup(string $group): void
     {
         $this->group = $group;
+    }
+
+    public function getIcon(): string
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(string $icon): void
+    {
+        $this->icon = $icon;
     }
 }
