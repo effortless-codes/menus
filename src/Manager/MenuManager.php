@@ -54,9 +54,8 @@ class MenuManager extends Menus
         static::$menus = static::getFactory();
         static::$menus->add(new MenuGroup(name: $name, group: $group, icon: $icon));
 
-        $currentGroup = static::getGroup(group: $group);
-
         if ($menus) {
+            $currentGroup = static::getGroup(group: $group);
             $menus = $menus(new AddMenu(menu: $currentGroup));
             /** @var AddMenu $menus */
             $menus->allMenus()->each(function ($menu) use ($currentGroup) {

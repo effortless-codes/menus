@@ -28,11 +28,15 @@ class AddMenu
     public function __construct(MenuGroup|Menu $menu)
     {
         self::$menu = $menu;
-        static::$menus = static::getFactory();
     }
 
     public static function allMenus(bool $resolvedOnly = true): MenuCollection
     {
+
+        if (!self::$menus instanceof MenuCollection){
+            return new MenuCollection();
+        }
+
         return self::$menus->filter(function ($menu) use ($resolvedOnly) {
             if ($menu instanceof Menu) {
                 return $menu->resolver === $resolvedOnly;
@@ -67,6 +71,7 @@ class AddMenu
         callable      $menus = null,
     ): static
     {
+        static::$menus = static::getFactory();
         static::$menus->add(new Menu(
             routeName: $routeName,
             title: $title,
@@ -79,7 +84,10 @@ class AddMenu
         if (!empty($menus)) {
             $currentMenu = static::getMenu(title: $title);
             $menus = $menus(new AddMenu(menu: $currentMenu));
-            $currentMenu->menus->add(item: $menus);
+            /** @var AddMenu $menus */
+            $menus->allMenus()->each(function ($menu) use ($currentMenu) {
+                $currentMenu->menus->add(item: $menu);
+            });
         }
 
         return new static(menu: self::$menu);
