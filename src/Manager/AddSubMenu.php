@@ -7,51 +7,35 @@ use Winata\Menu\MenuCollection;
 use Winata\Menu\Object\Menu;
 use Winata\Menu\Object\MenuGroup;
 
-class AddMenu
+class AddSubMenu
 {
-
-    protected static ?MenuCollection $menus = null;
+    protected ?MenuCollection $menus = null;
 
     /**
      * @return MenuCollection
      */
-    protected static function getFactory(): MenuCollection
+    protected function getFactory(): MenuCollection
     {
-        if (!static::$menus instanceof MenuCollection) {
-            static::$menus = new MenuCollection();
+        if (!$this->menus instanceof MenuCollection) {
+            $this->menus = new MenuCollection();
         }
-        return static::$menus;
+        return $this->menus;
     }
 
-    public static MenuGroup|Menu $menu;
-    public static string $group;
-
-    public function __construct(MenuGroup|Menu $menu, string $group)
+    public function __construct(public Menu $menu, public string $group)
     {
-        static::$menus = static::getFactory();
-        self::$menu = $menu;
-        self::$group = $group;
+        $this->menus = $this->getFactory();
     }
 
-    public static function allMenus(bool $resolvedOnly = true): MenuCollection
+    public function allMenus(bool $resolvedOnly = true): MenuCollection
     {
 
-        if (!self::$menus instanceof MenuCollection) {
-            return new MenuCollection();
-        }
-
-        return self::$menus
-            ->filter(function ($menu) use ($resolvedOnly) {
-                if ($menu instanceof Menu) {
-                    return $menu->resolver === $resolvedOnly;
-                }
-                return false;
-            });
+       return $this->menus;
     }
 
-    public static function getMenu($title): Menu
+    public function getMenu($title): Menu
     {
-        return static::$menus->where(key: 'title', operator: '=', value: $title)->where('group', self::$group)->first();
+        return $this->menus->where(key: 'title', operator: '=', value: $title)->where('group', $this->group)->first();
     }
 
     /**
@@ -64,7 +48,7 @@ class AddMenu
      * @param callable|null $menus
      * @return $this
      */
-    public static function addMenu(
+    public function addMenu(
         string        $title = 'menu',
         ?string       $routeName = null,
         ?string       $activeRouteName = null,
@@ -75,8 +59,8 @@ class AddMenu
         callable      $menus = null,
     ): static
     {
-        static::$menus->add(new Menu(
-            group: self::$group,
+        $this->menus->add(new Menu(
+            group: $this->group,
             routeName: $routeName,
             title: $title,
             activeRouteName: $activeRouteName,
@@ -94,6 +78,6 @@ class AddMenu
             });
         }
 
-        return new static(menu: self::$menu, group: self::$group);
+        return $this;
     }
 }
