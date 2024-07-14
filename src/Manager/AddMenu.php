@@ -2,7 +2,6 @@
 
 namespace Winata\Menu\Manager;
 
-use Winata\Menu\Abstracts\Menus;
 use Winata\Menu\Enums\MenuType;
 use Winata\Menu\MenuCollection;
 use Winata\Menu\Object\Menu;
@@ -25,6 +24,7 @@ class AddMenu
     }
 
     public static MenuGroup|Menu $menu;
+
     public function __construct(MenuGroup|Menu $menu)
     {
         self::$menu = $menu;
@@ -43,7 +43,7 @@ class AddMenu
 
     public static function getMenu($title): Menu
     {
-        return static::$menus->where('title', $title)->first();
+        return static::$menus->where(key: 'title', operator: '=', value: $title)->first();
     }
 
     /**
@@ -77,11 +77,11 @@ class AddMenu
         ));
 
         if (!empty($menus)) {
-            $currentMenu = static::getMenu($title);
-            $menus = $menus(new AddMenu($currentMenu));
-            $currentMenu->menus->add($menus);
+            $currentMenu = static::getMenu(title: $title);
+            $menus = $menus(new AddMenu(menu: $currentMenu));
+            $currentMenu->menus->add(item: $menus);
         }
 
-        return new static(self::$menu);
+        return new static(menu: self::$menu);
     }
 }

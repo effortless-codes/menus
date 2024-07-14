@@ -31,15 +31,15 @@ class MenuManager extends Menus
      */
     public static function get(): MenuCollection
     {
-        if (static::$menus instanceof MenuCollection){
-            return static::$menus->groupBy('group');
+        if (static::$menus instanceof MenuCollection) {
+            return static::$menus->groupBy(groupBy: 'group');
         }
         return new MenuCollection();
     }
 
     public static function getGroup(string $group): MenuGroup
     {
-        return static::$menus->where('group', $group)->first();
+        return static::$menus->where(key: 'group', operator: '=', value: $group)->first();
     }
 
     /**
@@ -47,18 +47,18 @@ class MenuManager extends Menus
      * @param string|null $group
      * @return $this
      */
-    public static function setGroup(string $name = null, string $group = null, callable $menus = null): static
+    public static function setGroup(string $name = null, string $group = null, string $icon = null, callable $menus = null): static
     {
         static::$menus = static::getFactory();
-        static::$menus->add(new MenuGroup($name, $group));
+        static::$menus->add(new MenuGroup(name: $name, group: $group, icon: $icon));
 
-        $currentGroup = static::getGroup($group);
+        $currentGroup = static::getGroup(group: $group);
 
         if ($menus) {
-            $menus = $menus(new AddMenu($currentGroup));
+            $menus = $menus(new AddMenu(menu: $currentGroup));
             /** @var AddMenu $menus */
             $menus->allMenus()->each(function ($menu) use ($currentGroup) {
-                $currentGroup->menus->add($menu);
+                $currentGroup->menus->add(item: $menu);
             });
         }
 
