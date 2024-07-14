@@ -22,7 +22,7 @@ class Menu implements HasMenu
 
     public function __construct(
         public ?string         $routeName = null,
-        public string          $title = 'menu',
+        public ?string         $title = 'menu',
         public ?string         $activeRouteName = null,
         public ?string         $icon = null,
         public \Closure|bool   $resolver = true,

@@ -7,15 +7,15 @@ use Winata\Menu\MenuCollection;
 
 class MenuGroup implements HasMenu
 {
-    public string $name = 'default';
-    public string $group = 'default';
+    public ?string $name = 'default';
+    public ?string $group = 'default';
     public ?string $icon = null;
     public ?MenuCollection $menus = null;
 
     public function __construct(
-        string $name = 'default',
-        string $group = 'default',
-        string $icon = null,
+        ?string $name = 'default',
+        ?string $group = 'default',
+        ?string $icon = null,
     )
     {
         $this->setName($name);
@@ -32,7 +32,7 @@ class MenuGroup implements HasMenu
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(?string $name = null): void
     {
         $this->name = $name;
     }
@@ -42,7 +42,7 @@ class MenuGroup implements HasMenu
         return $this->group;
     }
 
-    public function setGroup(string $group): void
+    public function setGroup(?string $group = null): void
     {
         $this->group = $group;
     }
@@ -52,7 +52,7 @@ class MenuGroup implements HasMenu
         return $this->icon;
     }
 
-    public function setIcon(string $icon): void
+    public function setIcon(?string $icon = null): void
     {
         $this->icon = $icon;
     }

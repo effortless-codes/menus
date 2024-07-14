@@ -45,9 +45,11 @@ class MenuManager extends Menus
     /**
      * @param string|null $name
      * @param string|null $group
+     * @param string|null $icon
+     * @param callable|null $menus
      * @return $this
      */
-    public static function setGroup(string $name = null, string $group = null, string $icon = null, callable $menus = null): static
+    public static function setGroup(?string $name = null, ?string $group = null, ?string $icon = null, callable $menus = null): static
     {
         static::$menus = static::getFactory();
         static::$menus->add(new MenuGroup(name: $name, group: $group, icon: $icon));
