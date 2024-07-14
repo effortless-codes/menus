@@ -3,29 +3,43 @@
 namespace Winata\Menu\Manager;
 
 use Winata\Menu\Abstracts\Menus;
-use Winata\Menu\Contracts\Menu;
 use Winata\Menu\MenuCollection;
 use Winata\Menu\Object\MenuGroup;
 
 class MenuManager extends Menus
 {
 
+    protected static ?MenuCollection $menus = null;
+
+    /**
+     * @return MenuCollection
+     */
+    protected static function getFactory(): MenuCollection
+    {
+        if (!static::$menus instanceof MenuCollection) {
+            static::$menus = new MenuCollection();
+        }
+        return static::$menus;
+    }
+
     public function __construct()
     {
-        $this->menus = $this->getFactory();
     }
 
     /**
      * @return MenuCollection
      */
-    public function get(): MenuCollection
+    public static function get(): MenuCollection
     {
-        return $this->menus->groupBy('name');
+        if (static::$menus instanceof MenuCollection){
+            return static::$menus->groupBy('group');
+        }
+        return new MenuCollection();
     }
 
-    public function getGroup(string $group): MenuGroup
+    public static function getGroup(string $group): MenuGroup
     {
-        return $this->menus->where('group', $group)->first();
+        return static::$menus->where('group', $group)->first();
     }
 
     /**
@@ -33,11 +47,12 @@ class MenuManager extends Menus
      * @param string|null $group
      * @return $this
      */
-    public function setGroup(string $name = null, string $group = null, callable $menus = null): static
+    public static function setGroup(string $name = null, string $group = null, callable $menus = null): static
     {
-        $this->menus->add(new MenuGroup($name, $group));
+        static::$menus = static::getFactory();
+        static::$menus->add(new MenuGroup($name, $group));
 
-        $currentGroup = $this->getGroup($group);
+        $currentGroup = static::getGroup($group);
 
         if ($menus) {
             $menus = $menus(new AddMenu($currentGroup));
@@ -47,6 +62,6 @@ class MenuManager extends Menus
             });
         }
 
-        return $this;
+        return new static();
     }
 }

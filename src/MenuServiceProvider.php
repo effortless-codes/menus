@@ -3,6 +3,7 @@
 namespace Winata\Menu;
 
 use Illuminate\Support\ServiceProvider;
+use Winata\Menu\Manager\MenuManager;
 
 class MenuServiceProvider extends ServiceProvider
 {
@@ -23,7 +24,7 @@ class MenuServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->singleton('menus', fn ($app, $p) => new Factory(name: $p['name'] ?? null, group: $p['group'] ?? null));
-        $this->app->alias('menus', Factory::class);
+        $this->app->singleton('menus', fn ($app, $p) => new MenuManager());
+        $this->app->alias('menus', MenuManager::class);
     }
 }

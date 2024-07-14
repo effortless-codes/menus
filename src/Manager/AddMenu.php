@@ -8,22 +8,42 @@ use Winata\Menu\MenuCollection;
 use Winata\Menu\Object\Menu;
 use Winata\Menu\Object\MenuGroup;
 
-class AddMenu extends Menus
+class AddMenu
 {
 
-    public function __construct(public MenuGroup|Menu $menu)
+    protected static ?MenuCollection $menus = null;
+
+    /**
+     * @return MenuCollection
+     */
+    protected static function getFactory(): MenuCollection
     {
-        $this->menus = $this->getFactory();
+        if (!static::$menus instanceof MenuCollection) {
+            static::$menus = new MenuCollection();
+        }
+        return static::$menus;
     }
 
-    public function allMenus(bool $resolvedOnly = true): MenuCollection
+    public static MenuGroup|Menu $menu;
+    public function __construct(MenuGroup|Menu $menu)
     {
-        return $this->menus->filter(fn (Menu $m) => $m->resolver === $resolvedOnly);
+        self::$menu = $menu;
+        static::$menus = static::getFactory();
     }
 
-    public function getMenu($title): Menu
+    public static function allMenus(bool $resolvedOnly = true): MenuCollection
     {
-        return $this->menus->where('title', $title)->first();
+        return self::$menus->filter(function ($menu) use ($resolvedOnly) {
+            if ($menu instanceof Menu) {
+                return $menu->resolver === $resolvedOnly;
+            }
+            return false;
+        });
+    }
+
+    public static function getMenu($title): Menu
+    {
+        return static::$menus->where('title', $title)->first();
     }
 
     /**
@@ -36,7 +56,7 @@ class AddMenu extends Menus
      * @param callable|null $menus
      * @return $this
      */
-    public function addMenu(
+    public static function addMenu(
         string        $title = 'menu',
         ?string       $routeName = null,
         ?string       $activeRouteName = null,
@@ -47,7 +67,7 @@ class AddMenu extends Menus
         callable      $menus = null,
     ): static
     {
-        $this->menus->add(new Menu(
+        static::$menus->add(new Menu(
             routeName: $routeName,
             title: $title,
             activeRouteName: $activeRouteName,
@@ -57,13 +77,11 @@ class AddMenu extends Menus
         ));
 
         if (!empty($menus)) {
-            $currentMenu = $this->getMenu($title);
+            $currentMenu = static::getMenu($title);
             $menus = $menus(new AddMenu($currentMenu));
-            $menus->allMenus()->each(function ($menu) use ($currentMenu) {
-                $currentMenu->menus->add($menu);
-            });
+            $currentMenu->menus->add($menus);
         }
 
-        return $this;
+        return new static(self::$menu);
     }
 }
