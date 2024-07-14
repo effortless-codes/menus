@@ -21,7 +21,6 @@ class Menu implements HasMenu
 {
 
     public function __construct(
-        public string          $group,
         public ?string         $routeName = null,
         public ?string         $title = 'menu',
         public ?string         $activeRouteName = null,

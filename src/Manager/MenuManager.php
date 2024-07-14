@@ -56,7 +56,7 @@ class MenuManager extends Menus
 
         if ($menus) {
             $currentGroup = static::getGroup(group: $group);
-            $menus = $menus(new AddMenu(menu: $currentGroup, group: $group));
+            $menus = $menus(new AddMenu(menu: $currentGroup));
             /** @var AddMenu $menus */
             $menus->allMenus()->each(function ($menu) use ($currentGroup) {
                 $currentGroup->menus->add(item: $menu);
