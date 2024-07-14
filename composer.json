@@ -3,7 +3,7 @@
     "description": "Laravel menu generator",
     "type": "library",
     "license": "MIT",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "authors": [
         {
             "name": "Winata bayu",
