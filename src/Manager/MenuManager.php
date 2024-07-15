@@ -37,18 +37,18 @@ class MenuManager extends Menus
             return static::$menus
                 ->when(!empty($name), function (MenuCollection $query) use ($name) {
                     if (is_string($name)) {
-                        $query->where('name', '=', $name);
+                        return $query->where('name', '=', $name);
                     }
                     if (is_array($name)) {
-                        $query->whereIn('name', $name);
+                        return $query->whereIn('name', $name);
                     }
                     return $query;
                 })->when(!empty($group), function (MenuCollection $query) use ($group) {
                     if (is_string($group)) {
-                        $query->where('group', '=', $group);
+                        return $query->where('group', '=', $group);
                     }
                     if (is_array($group)) {
-                        $query->whereIn('group', $group);
+                        return $query->whereIn('group', $group);
                     }
                     return $query;
                 });
