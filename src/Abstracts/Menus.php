@@ -2,9 +2,14 @@
 
 namespace Winata\Menu\Abstracts;
 
-use Winata\Menu\MenuCollection;
-
+/**
+ * Class Menus
+ *
+ * Abstract base class for defining application menus.
+ * Extend this class to implement specific menu structures.
+ *
+ * @package Winata\Menu\Abstracts
+ */
 abstract class Menus
 {
-
 }

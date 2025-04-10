@@ -1,21 +1,20 @@
 {
     "name": "winatabayu00/laravel-menu-generator",
-    "description": "Laravel menu generator",
+    "description": "Laravel menu generator package for dynamic and groupable menus.",
+    "keywords": ["laravel", "menu", "generator", "menu-group", "dynamic-menu"],
     "type": "library",
     "license": "MIT",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "authors": [
         {
-            "name": "Winata bayu",
+            "name": "Winata Bayu",
             "email": "winatabayu01@email.com"
         }
     ],
     "require": {
-        "php": ">=8.2",
+        "php": "^8.2",
         "ext-intl": "*",
         "ext-json": "*"
-    },
-    "require-dev": {
     },
     "autoload": {
         "psr-4": {
