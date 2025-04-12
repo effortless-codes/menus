@@ -49,7 +49,7 @@ class AddMenu
      */
     protected static function getFactory(): MenuCollection
     {
-        static $instance = null;
+        $instance = null;
 
         if (!$instance instanceof MenuCollection) {
             $instance = new MenuCollection();

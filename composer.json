@@ -4,7 +4,7 @@
     "keywords": ["laravel", "menu", "generator", "menu-group", "dynamic-menu"],
     "type": "library",
     "license": "MIT",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "authors": [
         {
             "name": "Winata Bayu",
